@@ -1,0 +1,26 @@
+만약 백엔드 서버에서 프론트엔드 서버에 HTTP 요청 메세지를 보내야 하는 경우, 아래 내용을 참고하라.
+If you want to send an HTTP request from the server to the frontend, you can use the Spring RestTemplate class
+in your server-side code [1][2]. Here's an example:
+
+```
+RestTemplate restTemplate = new RestTemplate();
+String url = "http://localhost:8001/api/data";
+String requestBody = "{ \"data\": \"example data\" }";
+HttpHeaders headers = new HttpHeaders();
+headers.setContentType(MediaType.APPLICATION_JSON);
+HttpEntity<String> entity = new HttpEntity<>(requestBody, headers);
+ResponseEntity<String> response = restTemplate.postForEntity(url, entity, String.class);
+```
+
+In this example, we're using the RestTemplate to send a POST request to the frontend server at http://localhost:8001/api/data
+with some example data in the request body. We're also setting the content type of the request to JSON.
+
+The postForEntity method sends the request and returns the response as a ResponseEntity object.
+You can then extract the response body and other information from this object.
+
+Note that you may still encounter a CORS issue when sending the request from the server to the frontend
+due to the same-origin policy. In this case, you can use one of the solutions mentioned in my previous answer, such as setting up a proxy or enabling CORS on the frontend server [4].
+
+Overall, the approach for sending an HTTP request from the server to the frontend using Spring is similar
+to sending a request from the frontend to the server. Use the appropriate HTTP method (e.g., POST, GET),
+set the request headers and body as needed, and handle any CORS issues that may arise [1][4].
