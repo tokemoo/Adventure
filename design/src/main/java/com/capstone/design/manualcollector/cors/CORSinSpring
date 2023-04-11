@@ -1,0 +1,54 @@
+https://spring.io/guides/gs/rest-service-cors/
+  위 문서에서 "Enable CORS" 항목 찾아볼 것.
+
+아래는 ChatGPT가 제시한 내용이다.
+1. CORS?
+웹 브라우저 콘솔 오류 메세지:  Access to fetch at 'http://localhost:8082/test' from origin 'http://localhost:3000' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
+
+답안: The error message you provided suggests that your frontend code is trying to make a request to a backend server at http://localhost:8082/test from the origin http://localhost:3000. However, the backend server is not configured to allow cross-origin resource sharing (CORS) from the origin http://localhost:3000. Specifically, the server is missing the required Access-Control-Allow-Origin header in the response to the preflight request.
+To resolve this issue, you need to configure the backend server to allow CORS from the origin http://localhost:3000. You can do this by adding the appropriate headers to the response to the preflight request. Here are some resources that can help you with this:
+For a general overview of CORS and how to enable it on your server, see the MDN Web Docs on CORS: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+If you are using Node.js and Express to build your backend server, you can use the cors middleware to handle CORS for you. Here's the official documentation for cors: https://github.com/expressjs/cors
+If you are using Spring to build your backend server, you can use the @CrossOrigin annotation to enable CORS. Here's the official documentation for @CrossOrigin: https://spring.io/guides/gs/rest-service-cors/
+
+
+2. 해결방안
+```
+@Configuration
+@EnableWebMvc
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+            .allowedOrigins("*")
+            .allowedMethods("GET", "POST", "PUT", "DELETE")
+            .allowedHeaders("*");
+    }
+}
+```
+
+In this example, the WebConfig class is annotated with @Configuration and @EnableWebMvc to enable Spring MVC configuration. The addCorsMappings method adds a CORS mapping for all endpoints, allowing all origins and HTTP methods, and all headers.
+You can customize this configuration by specifying allowed origins, methods, and headers, as needed for your specific use case. For example, you can replace "*" in .allowedOrigins("*") with a specific domain name or IP address, or you can specify specific HTTP methods instead of "GET", "POST", "PUT", and "DELETE".
+
+Make sure to add the @CrossOrigin annotation to your controller method as well, like this:
+```
+@RestController
+public class MyController {
+
+    @CrossOrigin
+    @GetMapping("/test")
+    public String test() {
+        return "Hello, world!";
+    }
+}
+```
+This will enable CORS for this specific endpoint, allowing cross-origin requests from any domain. If you need to restrict access to certain domains, you can specify them in the @CrossOrigin annotation:
+```
+@CrossOrigin(origins = "http://example.com")
+@GetMapping("/test")
+public String test() {
+    return "Hello, world!";
+}
+```
+In this example, the origins attribute is set to "http://example.com", which means that only requests from http://example.com will be allowed.
