@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 public class MenuController {
-    private MenuService service;
+    private MenuService service = MenuService.getInstance();
 
     public MenuController(MenuService service){
         this.service=service;
