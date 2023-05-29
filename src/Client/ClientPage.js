@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const url = 'http://localhost:8080';
+const url = 'http://3.132.13.94:8080';
 
 function ClientPage() {
   const [menuItems, setMenuItems] = useState([]);
